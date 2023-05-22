@@ -1,7 +1,13 @@
-import axios from 'axios'
+import axios from 'axios';
 
-const request = axios.create({
+const toAPI = axios.create({
     baseURL: 'https://reqres.in/api/',
 })
 
-export default request
+toAPI.interceptors.response.use(function (response) {
+    return response.data;
+}, function (error) {
+    return Promise.reject(error);
+});
+
+export default toAPI

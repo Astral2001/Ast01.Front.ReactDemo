@@ -6,7 +6,7 @@ import { fetchUsers } from "../../services/UserService";
 
 // Components
 import { Table } from "react-bootstrap";
-import request from "../../utils/request";
+import ReactPaginate from "react-paginate";
 
 const TableUsers = ({ props }) => {
     const columns = [ "ID", "Email", "First name", "Last name" ];
@@ -20,8 +20,8 @@ const TableUsers = ({ props }) => {
     const getUsersByPage = async (page = 1) => {
         let res = await fetchUsers(page);
 
-        if (res.status === 200 && res.data && res.data.data) {
-            setUsers(res.data.data);
+        if (res && res.data) {
+            setUsers(res.data);
         }
     }
 

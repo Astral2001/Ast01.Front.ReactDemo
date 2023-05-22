@@ -1,7 +1,7 @@
-import request from "../utils/request"
+import toAPI from "../utils/request";
 
 const fetchUsers = (page_num = 1) => {
-    return request.get(`/users?page=${page_num}`);
+    return toAPI.get(`/users?page=${page_num}`);
 }
 
-export { fetchUsers }
+export { fetchUsers };
