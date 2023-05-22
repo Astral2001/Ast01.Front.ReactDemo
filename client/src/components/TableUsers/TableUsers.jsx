@@ -1,38 +1,56 @@
+// Hooks
+import { useEffect, useState } from "react";
+
+// Services
+import { fetchUsers } from "../../services/UserService";
+
 // Components
 import { Table } from "react-bootstrap";
+import request from "../../utils/request";
 
-const TableUsers = ({ users }) => {
-    
+const TableUsers = ({ props }) => {
+    const columns = [ "ID", "Email", "First name", "Last name" ];
+    const [ users, setUsers ] = useState([]);
+
+    useEffect(() => {
+        getUsersByPage(2);
+    }
+    , []);
+
+    const getUsersByPage = async (page = 1) => {
+        let res = await fetchUsers(page);
+
+        if (res.status === 200 && res.data && res.data.data) {
+            setUsers(res.data.data);
+        }
+    }
+
     return (
         <div className="table-users-container">
             <Table striped hover responsive>
                 <thead>
                     <tr>
-                        <th>#</th>
-                        {Array.from({ length: 12 }).map((_, index) => (
-                            <th key={index}>Table heading</th>
-                        ))}
+                        { Array.from({ length: columns.length }).map((_, index) => (
+                                <th key={ index }>
+                                    { columns[index] }
+                                </th>
+                        )) }
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        {Array.from({ length: 12 }).map((_, index) => (
-                            <td key={index}>Table cell {index}</td>
-                        ))}
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        {Array.from({ length: 12 }).map((_, index) => (
-                            <td key={index}>Table cell {index}</td>
-                        ))}
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        {Array.from({ length: 12 }).map((_, index) => (
-                            <td key={index}>Table cell {index}</td>
-                        ))}
-                    </tr>
+                    {
+                        users && users.length > 0 &&
+                        users.map((user, index) => {
+                            return (
+                                <tr key={`user-${index}`}>
+                                    <td> {user.id} </td>
+                                    <td> {user.email} </td>
+                                    <td> {user.first_name} </td>
+                                    <td> {user.last_name} </td>
+                                </tr>
+                            )
+                        })
+                    }
                 </tbody>
             </Table>
         </div>
