@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 
 // Styles
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
 
 // Components
 import App from "./App";

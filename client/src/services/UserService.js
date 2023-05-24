@@ -1,7 +1,12 @@
-import toAPI from "../utils/toAPI";
+import { toUserAPI } from "../utils/toAPIs";
 
 const fetchUsers = (page_num = 1) => {
-    return toAPI.get(`/users?page=${page_num}`);
+    return toUserAPI.get(`/users?page=${page_num}`);
 }
 
-export { fetchUsers };
+const postCreatedUser = (newUser) => {
+    return toUserAPI.post(`/users`, { name: newUser.name, job: newUser.job });
+}
+
+export { fetchUsers, postCreatedUser };
+
