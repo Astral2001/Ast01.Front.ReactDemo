@@ -7,7 +7,8 @@ import { toast } from 'react-toastify';
 import { postCreatedUser } from "../../services/UserService";
 
 const NewUserModals = ( props ) => {
-    const { isShow, handleShow } = props
+    const { useCase, isShow, handleShow, handleUpdateTable, dataEditUser } = props
+
     const [ name, setName ] = useState('')
     const [ job, setJob ] = useState('')
     const [ isRequired, setIsRequired ] = useState(false);
@@ -21,6 +22,14 @@ const NewUserModals = ( props ) => {
         }
     }, [name, job]);
 
+    // Use case: update
+    useEffect(() => {
+        if (isShow) {
+            setName(dataEditUser.first_name);
+        }
+    }, [dataEditUser]);
+
+
     // Methods
     const handleSaveUser = async () => {
         if (!isRequired) {
@@ -31,6 +40,7 @@ const NewUserModals = ( props ) => {
             if (res && res.id) {
                 cleanAllFields();
                 toast.success('User is created successfully!');
+                handleUpdateTable({ first_name: name, id: res.id });
             } else {
                 toast.error('Something went wrong!');
             }
@@ -39,6 +49,10 @@ const NewUserModals = ( props ) => {
             // Not refresh when any field is empty
             refreshModal();
         }
+    }
+
+    const handleUpdateUser = () => {
+
     }
 
     // Serve for methods
@@ -62,36 +76,88 @@ const NewUserModals = ( props ) => {
         <div className="add-new-container">
             <Modal show={isShow} onHide={handleShow} className="">
                 <Modal.Header closeButton>
-                    <Modal.Title>New user</Modal.Title>
+                    <Modal.Title>
+                        { useCase === 'create' && 'New user' }
+                        { useCase === 'update' && 'Update user' }
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="mx-3 my-2">
-                    <div className="body-add-new">
-                        <div className="mb-3">
-                            <label htmlFor="input-name" className="form-label">Name</label>
-                            <input
-                                type="text"
-                                className="form-control mb-3"
-                                id="input-name"
-                                onChange={ ( event ) => setName(event.target.value)}
-                            />
+                    {
+                        !useCase && (
+                            <div className="">Nothing to show</div>
+                        )
+                    }
 
-                            <label htmlFor="input-job" className="form-label">Email</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="input-job"
-                                onChange={ ( event ) => setJob(event.target.value)}
-                            />
-                        </div>
-                    </div>
+                    {
+                        useCase === 'create' && (
+                            <div className="body-add-new">
+                                <div className="mb-3">
+                                    <label htmlFor="input-name" className="form-label">Name</label>
+                                    <input
+                                        type="text"
+                                        className="form-control mb-3"
+                                        id="input-name"
+                                        onChange={ ( event ) => setName(event.target.value)}
+                                    />
+
+                                    <label htmlFor="input-job" className="form-label">Job</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="input-job"
+                                        onChange={ ( event ) => setJob(event.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        )
+                    }
+
+                    {
+                        useCase === 'update' && (
+                            <div className="body-add-new">
+                                <div className="mb-3">
+                                    <div className="body-add-new">
+                                        <div className="mb-3">
+                                            <label htmlFor="input-name" className="form-label">Name</label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-3"
+                                                id="input-name"
+                                                onChange={ ( event ) => setName(event.target.value)}
+                                                value={name}
+                                            />
+
+                                            <label htmlFor="input-job" className="form-label">Job</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                id="input-job"
+                                                onChange={ ( event ) => setJob(event.target.value)}
+                                                value={job}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    }
+
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCancel}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleSaveUser}>
-                        Create
+
+                    <Button
+                        variant="primary"
+                        onClick={ () => {
+                            useCase === 'create' &&  handleSaveUser()
+                            useCase === 'update' &&  handleUpdateUser()
+                        }}
+                    >
+                        Confirm
                     </Button>
+
                 </Modal.Footer>
             </Modal>
         </div>

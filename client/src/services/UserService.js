@@ -8,5 +8,17 @@ const postCreatedUser = (newUser) => {
     return toUserAPI.post(`/users`, { name: newUser.name, job: newUser.job });
 }
 
-export { fetchUsers, postCreatedUser };
+const updateUser = (id, updatedUser) => {
+    return toUserAPI.put(`/users/${id}`,
+    {
+        name: updatedUser.name,
+        job: updatedUser.job
+    });
+}
+
+const deleteUser = (id) => {
+    return toUserAPI.delete(`/users/${id}`);
+}
+
+export { fetchUsers, postCreatedUser, updateUser, deleteUser };
 

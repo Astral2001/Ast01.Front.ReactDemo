@@ -13,7 +13,9 @@ const TableUsers = ({ props }) => {
     const columns = [ "ID", "Email", "First name", "Last name", "Action" ];
     const [ users, setUsers ] = useState([]);
     const [ totalPages, setTotalPages ] = useState(0);
-    // const [ totalUsers, setTotalUsers ] = useState(0);
+    const [ useCase, setUseCase ] = useState('');
+    const [ dataEditUser, setDataEditUser ] = useState({}); // use for update user
+
     const [ isShowingModal, setIsShowingModal ] = useState(false);
 
     useEffect(() => {
@@ -22,6 +24,12 @@ const TableUsers = ({ props }) => {
     }, []);
 
     // Methods
+    // Add new user to top of table (just for fake api)
+    const handleUpdateTable = (user) => {
+        setUsers([user, ...users]);
+    }
+
+    // Pagination
     const getUsersByPage = async (page = 1) => {
         let res = await fetchUsers(page);
 
@@ -52,7 +60,10 @@ const TableUsers = ({ props }) => {
 
                 <button
                     className="btn btn-primary"
-                    onClick={ () => setIsShowingModal(true) }
+                    onClick={ () => {
+                        setUseCase('create')
+                        setIsShowingModal(true)
+                    }}
                 >
                     New user
                 </button>
@@ -81,10 +92,22 @@ const TableUsers = ({ props }) => {
                                     <td> {user.first_name} </td>
                                     <td> {user.last_name} </td>
                                     <td className="">
-                                        <button className="btn btn-success me-3 w-25">
+                                        <button
+                                            className="btn btn-success me-3 w-25"
+                                            onClick={ () => {
+                                                setUseCase('update')
+                                                setIsShowingModal(true)
+                                                setDataEditUser(user)
+                                            }}
+                                        >
                                             Edit
                                         </button>
-                                        <button className="btn btn-danger w-25">
+                                        <button
+                                            className="btn btn-danger w-25"
+                                            onClick={ () => {
+
+                                            }}
+                                        >
                                             Delete
                                         </button>
                                     </td>
@@ -116,9 +139,16 @@ const TableUsers = ({ props }) => {
             />
 
             <UserModals
-                useCase = "create"
+                useCase = { useCase }
                 isShow = { isShowingModal }
-                handleShow = { (showing = false) => setIsShowingModal(showing) }
+                handleShow = { (showing = false) => {
+                    setIsShowingModal(showing)
+                    useCase === 'update' && setDataEditUser({})
+                }}
+                handleUpdateTable = { handleUpdateTable }
+                dataEditUser = {
+                    useCase === 'update' ? dataEditUser : {}
+                }
             />
         </div>
     );
