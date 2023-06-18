@@ -8,9 +8,9 @@ import { postCreatedUser } from "../../services/UserService";
 
 const NewUserModals = ( props ) => {
     const { isShow, handleShow } = props
-    const [name, setName] = useState('')
-    const [job, setJob] = useState('')
-    const [isRequired, setIsRequired] = useState(false);
+    const [ name, setName ] = useState('')
+    const [ job, setJob ] = useState('')
+    const [ isRequired, setIsRequired ] = useState(false);
 
     // Check required fields
     useEffect(() => {
@@ -54,6 +54,10 @@ const NewUserModals = ( props ) => {
         }, 200);
     }
 
+    const handleCancel = () => {
+        handleShow()
+    }
+
     return (
         <div className="add-new-container">
             <Modal show={isShow} onHide={handleShow} className="">
@@ -82,7 +86,7 @@ const NewUserModals = ( props ) => {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleShow}>
+                    <Button variant="secondary" onClick={handleCancel}>
                         Close
                     </Button>
                     <Button variant="primary" onClick={handleSaveUser}>
