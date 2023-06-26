@@ -25,8 +25,12 @@ const TableUsers = ({ props }) => {
 
     // Methods
     // Add new user to top of table (just for fake api)
-    const handleUpdateTable = (user) => {
-        setUsers([user, ...users]);
+    const handleUpdateTable = (uC, user) => {
+        uC === 'create' && setUsers([user, ...users]);
+        uC === 'update' &&
+            setUsers(users.map((item) => (
+                item.id === user.id ? user : item
+            )))
     }
 
     // Pagination
@@ -43,7 +47,6 @@ const TableUsers = ({ props }) => {
 
         if (res && res.data) {
             setTotalPages(res.total_pages);
-            // setTotalUsers(res.total);
         }
     }
 
@@ -72,49 +75,47 @@ const TableUsers = ({ props }) => {
             <Table striped hover responsive>
                 <thead>
                     <tr>
-                        {
-                            Array.from({ length: columns.length }).map((_, index) => (
-                                <th key={ index } className="text-primary">
-                                    { columns[index] }
-                                </th>
-                            ))
-                        }
+                    {
+                        Array.from({ length: columns.length }).map((_, index) => (
+                            <th key={ index } className="text-primary">
+                                { columns[index] }
+                            </th>
+                        ))
+                    }
                     </tr>
                 </thead>
                 <tbody>
-                    {
-                        users && users.length > 0 &&
-                        users.map((user, index) => {
-                            return (
-                                <tr key={`user-${index}`}>
-                                    <td> {user.id} </td>
-                                    <td> {user.email} </td>
-                                    <td> {user.first_name} </td>
-                                    <td> {user.last_name} </td>
-                                    <td className="">
-                                        <button
-                                            className="btn btn-success me-3 w-25"
-                                            onClick={ () => {
-                                                setUseCase('update')
-                                                setIsShowingModal(true)
-                                                setDataEditUser(user)
-                                            }}
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            className="btn btn-danger w-25"
-                                            onClick={ () => {
+                {
+                    users && users.length > 0 &&
+                    users.map((user, index) => (
+                        <tr key={`user-${index}`}>
+                            <td> {user.id} </td>
+                            <td> {user.email} </td>
+                            <td> {user.first_name} </td>
+                            <td> {user.last_name} </td>
+                            <td className="">
+                                <button
+                                    className="btn btn-success me-3 w-25"
+                                    onClick={ () => {
+                                        setUseCase('update')
+                                        setIsShowingModal(true)
+                                        setDataEditUser(user)
+                                    }}
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    className="btn btn-danger w-25"
+                                    onClick={ () => {
 
-                                            }}
-                                        >
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            )
-                        })
-                    }
+                                    }}
+                                >
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    ))
+                }
                 </tbody>
             </Table>
 
